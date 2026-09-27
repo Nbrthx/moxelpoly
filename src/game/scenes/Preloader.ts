@@ -35,7 +35,15 @@ export class Preloader extends Scene
         this.load.spritesheet("char2", "char2.png", { frameWidth: 64, frameHeight: 64 })
 
         this.load.spritesheet("dice", "dice.png", { frameWidth: 32, frameHeight: 32 })
-        
+
+        this.load.image("info-board", "info-board.png")
+        this.load.image("card", "card.png")
+        this.load.spritesheet("arrow", "arrow.png", { frameWidth: 48, frameHeight: 48 })
+
+        this.load.image("buy-btn", "buy-btn.png")
+        this.load.image("buy-btn-d", "buy-btn-d.png")
+        this.load.image("nobuy-btn", "nobuy-btn.png")
+
         this.load.font("monogram", "monogram.ttf")
     }
 
@@ -64,6 +72,13 @@ export class Preloader extends Scene
             key: "roll-dice2",
             frames: this.anims.generateFrameNumbers("dice", { frames: [3, 1, 4, 5, 2, 1, 0, 3, 2, 2, 0] }),
             frameRate: 13
+        })
+
+        this.anims.create({
+            key: "arrow-tick",
+            frames: this.anims.generateFrameNumbers("arrow", { frames: [0, 1] }),
+            frameRate: 4,
+            repeat: -1
         })
 
         this.scene.start('Game');

@@ -19,12 +19,8 @@ export class Dice extends GameObjects.Container {
 
         this.dice1 = scene.add.sprite(scene.scale.width/2-16*this.gameScale, scene.scale.height/2, "dice")
         this.dice1.setScale(this.gameScale)
-        this.dice1.setInteractive()
         this.dice2 = scene.add.sprite(scene.scale.width/2+16*this.gameScale, scene.scale.height/2, "dice")
         this.dice2.setScale(this.gameScale)
-        this.dice2.setInteractive()
-
-        this.add([this.dice1, this.dice2])
 
         this.dice1.on("animationcomplete", () => {
             if(this.dice1.anims.currentAnim?.key){
@@ -33,21 +29,19 @@ export class Dice extends GameObjects.Container {
         })
 
         this.isDiceClicked = false
+
+        const clickArea = scene.add.rectangle(scene.scale.width/2, scene.scale.height/2, 64*scene.gameScale, 32*scene.gameScale)
+        clickArea.setInteractive()
         
-        this.dice1.on("pointerdown", () => {
+        clickArea.on("pointerdown", () => {
             if(!this.isDiceClicked){
                 this.isDiceClicked = true
                 this.dice1.play("roll-dice1")
                 this.dice2.play("roll-dice2")
             }
         })
-         this.dice2.on("pointerdown", () => {
-            if(!this.isDiceClicked){
-                this.isDiceClicked = true
-                this.dice1.play("roll-dice1")
-                this.dice2.play("roll-dice2")
-            }
-        })
+
+        this.add([this.dice1, this.dice2, clickArea])
     }
 
     onAnimationComplete(scene: Game){
