@@ -5,13 +5,14 @@ import { Game } from "../scenes/Game"
 export class Player extends GameObjects.Sprite {
 
     id: number
+    name: string
     scene: Game
     step: number
     offset: { x: number, y: number }
 
-    balance: number
+    money: number
 
-    constructor(scene: Game, x: number, y: number, id: number){
+    constructor(scene: Game, x: number, y: number, id: number, name: string){
 
         let texture = "char1"
         let offset = { x: -1, y: -1 }
@@ -27,17 +28,18 @@ export class Player extends GameObjects.Sprite {
 
         this.scene = scene
         this.id = id
+        this.name = name
         this.offset = offset
 
         this.setPosition(this.x+this.offset.x*scene.gameScale, this.y+this.offset.y*scene.gameScale)
 
-        setTimeout(() => this.play(animIdle), Math.floor(Math.random()*500))
+        setTimeout(() => this.play(animIdle), id*800)
 
-        scene.add.existing(this)
+        if(name != "Empty") scene.add.existing(this)
         this.setScale(scene.gameScale)
 
         this.step = 0
 
-        this.balance = 0
+        this.money = 1000
     }
 }

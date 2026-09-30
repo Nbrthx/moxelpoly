@@ -44,6 +44,9 @@ export class Preloader extends Scene
         this.load.image("buy-btn-d", "buy-btn-d.png")
         this.load.image("nobuy-btn", "nobuy-btn.png")
 
+        this.load.spritesheet("house1", "house1.png", { frameWidth: 48, frameHeight: 48 })
+        this.load.spritesheet("house2", "house2.png", { frameWidth: 48, frameHeight: 48 })
+
         this.load.font("monogram", "monogram.ttf")
     }
 

@@ -1,10 +1,19 @@
 import { GameObjects } from "phaser";
 import { GameUI } from "../scenes/GameUI";
-
-
+import { Place } from "../components/MapDatas";
+import { Player } from "./Player";
 export class Card extends GameObjects.Container {
 
     uiScale: number
+    text: GameObjects.Text
+
+    buyBtn: GameObjects.Image;
+    nobuyBtn: GameObjects.Image;
+
+    buyCallback: (place: Place) => void
+    nobuyCallback: () => void
+
+    currentPlace: Place
 
     constructor(scene: GameUI){
         super(scene)
@@ -28,18 +37,49 @@ export class Card extends GameObjects.Container {
         arrowRight.setScale(this.uiScale)
         arrowRight.play("arrow-tick")
 
-        const buyBtn = scene.add.image(scene.scale.width/2-42*this.uiScale, scene.scale.height/2+100*this.uiScale, "buy-btn")
-        buyBtn.setScale(this.uiScale)
-        buyBtn.setTexture("buy-btn-d")
+        this.buyBtn = scene.add.image(scene.scale.width/2-42*this.uiScale, scene.scale.height/2+100*this.uiScale, "buy-btn")
+        this.buyBtn.setScale(this.uiScale)
+        this.buyBtn.setTexture("buy-btn-d")
 
-        const nobuyBtn = scene.add.image(scene.scale.width/2+42*this.uiScale, scene.scale.height/2+100*this.uiScale, "nobuy-btn")
-        nobuyBtn.setScale(this.uiScale)
+        this.nobuyBtn = scene.add.image(scene.scale.width/2+42*this.uiScale, scene.scale.height/2+100*this.uiScale, "nobuy-btn")
+        this.nobuyBtn.setScale(this.uiScale)
 
-        nobuyBtn.setInteractive()
-        nobuyBtn.on("pointerdown", () => {
-            this.setVisible(false)
+        this.buyBtn.setInteractive()
+        this.buyBtn.on("pointerdown", () => {
+            if(this.buyBtn.texture.key == "buy-btn" && this.currentPlace){
+                this.setVisible(false)
+                this.buyCallback(this.currentPlace)
+            }
         })
 
-        this.add([bg, img, arrowLeft, arrowRight, buyBtn, nobuyBtn])
+        this.nobuyBtn.setInteractive()
+        this.nobuyBtn.on("pointerdown", () => {
+            this.setVisible(false)
+            this.nobuyCallback()
+        })
+
+        this.text = scene.add.text(scene.scale.width/2, scene.scale.height/2, "Null", {
+            fontFamily: "monogram", fontSize: 16*scene.uiScale, color: "#313638"
+        })
+        this.text.setWordWrapWidth(128*this.uiScale)
+        this.text.setOrigin(0.5)
+
+        this.add([bg, img, arrowLeft, arrowRight, this.buyBtn, this.nobuyBtn, this.text])
+    }
+
+    showCard(place: Place, player: Player){
+
+        this.text.setText("Buy this "+place.name+" with price $"+place.price+"?")
+
+        this.currentPlace = place
+
+        if(player.money >= place.price){
+            this.buyBtn.setTexture("buy-btn")
+        }
+        else{
+            this.buyBtn.setTexture("buy-btn-d")
+        }
+
+        this.setVisible(true)
     }
 }

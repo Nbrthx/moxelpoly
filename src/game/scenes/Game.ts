@@ -3,6 +3,7 @@ import { Player } from '../prefabs/Player';
 import { Dice } from '../prefabs/Dice';
 import { GameUI } from './GameUI';
 import { MapDatas } from '../components/MapDatas';
+import { House } from '../prefabs/House';
 
 const lerp = (start: number, end: number, t: number) => start + (end - start) * t;
 
@@ -15,6 +16,8 @@ export class Game extends Scene
 
     players: Player[]
     currentIndex: number;
+
+    houses: House[]
 
     gameScale: number
 
@@ -42,12 +45,16 @@ export class Game extends Scene
 
         this.mapDatas = new MapDatas()
 
-        const player1 = new Player(this, this.mapDatas.locations[0].x*this.gameScale, this.mapDatas.locations[0].y*this.gameScale, 0)
-        const player2 = new Player(this, this.mapDatas.locations[0].x*this.gameScale, this.mapDatas.locations[0].y*this.gameScale, 1)
+        const startPos = { x: this.mapDatas.locations[0].x*this.gameScale, y: this.mapDatas.locations[0].y*this.gameScale }
+
+        const player1 = new Player(this, startPos.x, startPos.y, 0, "Niberthix")
+        const player2 = new Player(this, startPos.x, startPos.y, 1, "Sabrina")
 
         this.players = [player1, player2]
 
         this.currentIndex = 0
+
+        this.houses = []
 
         this.UI = (this.scene.get('GameUI') || this.scene.add('GameUI', new GameUI(), true)) as GameUI
 
@@ -81,9 +88,10 @@ export class Game extends Scene
     }
 
     walk(curr: number, dest: number){
+        const player = this.players[this.currentIndex]
+
         if(curr < dest){ 
-            this.isWalk = true
-            const player = this.players[this.currentIndex]
+
             this.tweens.add({
                 targets: player,
                 x: (this.mapDatas.locations[((curr+1) % 32)].x+player.offset.x)*this.gameScale,
@@ -94,11 +102,41 @@ export class Game extends Scene
                     this.walk(curr+1, dest)
                 }
             })
+
+            if((curr % 32) == 31) {
+                player.money += 150
+                this.UI.refreshInfoBoard()
+            }
+
+            this.isWalk = true
         }
         else{
             setTimeout(() => {
-                this.isWalk = false
-                this.currentIndex = (this.currentIndex + 1) % this.players.length
+                const place = this.mapDatas.places.find(v => v.location == (dest % 32))
+                if(place){
+                    const ownedHouse = this.houses.find(v => v.location == place.location)
+                    if(ownedHouse){
+                        const owner = this.players.find(v => v.id == ownedHouse.ownerId) 
+                        if(owner && ownedHouse.ownerId != player.id){
+                            owner.money += place.price/2
+                            player.money -= place.price/2
+                            this.UI.refreshInfoBoard()
+                            this.isWalk = false
+                            this.currentIndex = (this.currentIndex + 1) % this.players.length
+                        }
+                        else{
+                            this.isWalk = false
+                            this.currentIndex = (this.currentIndex + 1) % this.players.length
+                        }
+                    }
+                    else{
+                        this.UI.card.showCard(place, player)
+                    }
+                }
+                else{
+                    this.isWalk = false
+                    this.currentIndex = (this.currentIndex + 1) % this.players.length
+                }
             }, 1200)
         }
     }

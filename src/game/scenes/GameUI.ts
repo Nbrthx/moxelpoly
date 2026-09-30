@@ -1,6 +1,9 @@
 import { GameObjects, Scene } from "phaser";
 import { Card } from "../prefabs/Card";
 import { Game } from "./Game";
+import { InfoBoard } from "../prefabs/InfoBoard";
+import { Place } from "../components/MapDatas";
+import { House } from "../prefabs/House";
 
 
 
@@ -9,7 +12,11 @@ export class GameUI extends Scene {
     uiScale: number
     gameScene: Game
 
+    card: Card
+
     pointerCurrentlyOver: number // from Game Scene
+
+    infoBoards: InfoBoard[];
 
     constructor(){
         super("GameUI")
@@ -22,29 +29,16 @@ export class GameUI extends Scene {
 
         this.pointerCurrentlyOver = 0
 
-        const infoBoard1 = this.add.image(8, 48, "info-board")
-        infoBoard1.setScale(this.uiScale)
-        infoBoard1.setOrigin(0)
-        infoBoard1.setInteractive()
+        this.infoBoards = [
+            new InfoBoard(this, 64*this.uiScale, 32*this.uiScale, this.gameScene.players[0]),
+            new InfoBoard(this, this.scale.width-64*this.uiScale, 32*this.uiScale, this.gameScene.players[1]),
+            new InfoBoard(this, this.scale.width-64*this.uiScale, this.scale.height-32*this.uiScale, null),
+            new InfoBoard(this, 64*this.uiScale, this.scale.height-32*this.uiScale, null)
+        ]
 
-        const infoBoard2 = this.add.image(this.scale.width-8, 48, "info-board")
-        infoBoard2.setScale(this.uiScale)
-        infoBoard2.setOrigin(1, 0)
-        infoBoard2.setInteractive()
-
-        const infoBoard3 = this.add.image(8, this.scale.height-8, "info-board")
-        infoBoard3.setScale(this.uiScale)
-        infoBoard3.setOrigin(0, 1)
-        infoBoard3.setInteractive()
-
-        const infoBoard4 = this.add.image(this.scale.width-8, this.scale.height-8, "info-board")
-        infoBoard4.setScale(this.uiScale)
-        infoBoard4.setOrigin(1)
-        infoBoard4.setInteractive()
-
-        this.add.text(32, 64, "Hello World", {
-            fontFamily: "monogram", color: "#000000", fontSize: 16*this.uiScale
-        })
+        // this.add.text(32, 64, "Hello World", {
+        //     fontFamily: "monogram", color: "#000000", fontSize: 16*this.uiScale
+        // })
 
         let downPos = { x: 0, y: 0 }
 
@@ -72,6 +66,30 @@ export class GameUI extends Scene {
             downPos = { x: 0, y: 0 }
         })
 
-        new Card(this)
+        this.card = new Card(this)
+        this.card.setVisible(false)
+
+        this.card.nobuyCallback = () => {
+            this.gameScene.isWalk = false
+            this.gameScene.currentIndex = (this.gameScene.currentIndex + 1) % this.gameScene.players.length
+        }
+
+        this.card.buyCallback = (place: Place) => {
+            this.gameScene.players[this.gameScene.currentIndex].money -= place.price
+            this.refreshInfoBoard()
+
+            this.gameScene.houses.push(
+                new House(this.gameScene, place, this.gameScene.currentIndex)
+            )
+            
+            this.gameScene.isWalk = false
+            this.gameScene.currentIndex = (this.gameScene.currentIndex + 1) % this.gameScene.players.length
+        }
+    }
+
+    refreshInfoBoard(){
+        this.infoBoards.forEach(v => {
+            v.refresh()
+        })
     }
 }
