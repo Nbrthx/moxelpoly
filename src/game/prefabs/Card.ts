@@ -58,10 +58,10 @@ export class Card extends GameObjects.Container {
             this.nobuyCallback()
         })
 
-        this.text = scene.add.text(scene.scale.width/2, scene.scale.height/2, "Null", {
+        this.text = scene.add.text(scene.scale.width/2, scene.scale.height/2+24*scene.uiScale, "Null", {
             fontFamily: "monogram", fontSize: 16*scene.uiScale, color: "#313638"
         })
-        this.text.setWordWrapWidth(128*this.uiScale)
+        this.text.setWordWrapWidth(144*this.uiScale)
         this.text.setOrigin(0.5)
 
         this.add([bg, img, arrowLeft, arrowRight, this.buyBtn, this.nobuyBtn, this.text])

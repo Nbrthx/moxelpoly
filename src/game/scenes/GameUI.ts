@@ -4,6 +4,7 @@ import { Game } from "./Game";
 import { InfoBoard } from "../prefabs/InfoBoard";
 import { Place } from "../components/MapDatas";
 import { House } from "../prefabs/House";
+import { Dice } from "../prefabs/Dice";
 
 
 
@@ -17,6 +18,7 @@ export class GameUI extends Scene {
     pointerCurrentlyOver: number // from Game Scene
 
     infoBoards: InfoBoard[];
+    dice: Dice;
 
     constructor(){
         super("GameUI")
@@ -66,12 +68,16 @@ export class GameUI extends Scene {
             downPos = { x: 0, y: 0 }
         })
 
+
+        this.dice = new Dice(this)
+
         this.card = new Card(this)
         this.card.setVisible(false)
 
         this.card.nobuyCallback = () => {
             this.gameScene.isWalk = false
-            this.gameScene.currentIndex = (this.gameScene.currentIndex + 1) % this.gameScene.players.length
+            this.gameScene.changeTurn()
+            this.dice.setVisible(true)
         }
 
         this.card.buyCallback = (place: Place) => {
@@ -83,7 +89,8 @@ export class GameUI extends Scene {
             )
             
             this.gameScene.isWalk = false
-            this.gameScene.currentIndex = (this.gameScene.currentIndex + 1) % this.gameScene.players.length
+            this.gameScene.changeTurn()
+            this.dice.setVisible(true)
         }
     }
 

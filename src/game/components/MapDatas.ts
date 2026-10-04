@@ -3,6 +3,7 @@
 export interface Place {
     location: number
     name: string
+    group: string
     price: number
 }
 
@@ -54,102 +55,122 @@ export class MapDatas {
         this.places = [
             {
                 location: 1,
-                name: "Place A",
-                price: 100
+                name: "Mediterranean Avenue",
+                group: "A",
+                price: 60
             },
             {
                 location: 2,
-                name: "Place B",
-                price: 100
+                name: "Baltic Avenue",
+                group: "A",
+                price: 60
             },
             {
                 location: 3,
-                name: "Place C",
-                price: 100
+                name: "Oriental Avenue",
+                group: "A",
+                price: 60
             },
             {
                 location: 5,
-                name: "Place D",
-                price: 150
+                name: "Vermont Avenue",
+                group: "B",
+                price: 100
             },
             {
                 location: 6,
-                name: "Place E",
-                price: 150
+                name: "Connecticut Avenue",
+                group: "B",
+                price: 100
             },
             {
                 location: 7,
-                name: "Place F",
-                price: 150
+                name: "St. Charles Place",
+                group: "B",
+                price: 120
             },
             {
                 location: 9,
-                name: "Place G",
-                price: 200
+                name: "States Avenue",
+                group: "C",
+                price: 140
             },
             {
                 location: 10,
-                name: "Place H",
-                price: 200
+                name: "Virginia Avenue",
+                group: "C",
+                price: 140
             },
             {
                 location: 11,
-                name: "Place I",
-                price: 200
+                name: "St. James Place",
+                group: "C",
+                price: 160
             },
             {
                 location: 13,
-                name: "Place J",
-                price: 250
+                name: "Tennessee Avenue",
+                group: "D",
+                price: 180
             },
             {
                 location: 15,
-                name: "Place K",
-                price: 250
+                name: "New York Avenue",
+                group: "D",
+                price: 200
             },
             {
                 location: 17,
-                name: "Place L",
-                price: 300
+                name: "Kentucky Avenue",
+                group: "E",
+                price: 220
             },
             {
                 location: 19,
-                name: "Place M",
-                price: 300
+                name: "Indiana Avenue",
+                group: "E",
+                price: 240
             },
             {
                 location: 21,
-                name: "Place N",
-                price: 350
+                name: "Illinois Avenue",
+                group: "F",
+                price: 260
             },
             {
                 location: 22,
-                name: "Place O",
-                price: 350
+                name: "Atlantic Avenue",
+                group: "F",
+                price: 260
             },
             {
                 location: 23,
-                name: "Place P",
-                price: 350
+                name: "Ventnor Avenue",
+                group: "F",
+                price: 280
             },
             {
                 location: 26,
-                name: "Place Q",
-                price: 350
+                name: "Marvin Gardens",
+                group: "G",
+                price: 300
             },
             {
                 location: 27,
-                name: "Place R",
-                price: 350
+                name: "Pacific Ave",
+                group: "G",
+                price: 320
             },
             {
                 location: 29,
-                name: "Place S",
-                price: 400
+                name: "North Carolina Ave",
+                group: "H",
+                price: 350
             },
             {
                 location: 31,
-                name: "Place T",
+                name: "Pennsylvania Ave",
+                group: "H",
                 price: 400
             },
         ]

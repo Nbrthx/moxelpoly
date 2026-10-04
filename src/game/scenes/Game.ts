@@ -1,6 +1,5 @@
 import { GameObjects, Scene } from 'phaser';
 import { Player } from '../prefabs/Player';
-import { Dice } from '../prefabs/Dice';
 import { GameUI } from './GameUI';
 import { MapDatas } from '../components/MapDatas';
 import { House } from '../prefabs/House';
@@ -11,15 +10,14 @@ export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     bg: GameObjects.Image;
+    gameScale: number
+    houses: House[]
 
-    dice: Dice;
-
+    // State
     players: Player[]
     currentIndex: number;
 
-    houses: House[]
-
-    gameScale: number
+    diceDouble: boolean
 
     pointerDown: boolean
     isWalk: boolean
@@ -41,8 +39,6 @@ export class Game extends Scene
         this.bg = this.add.image(this.scale.width/2, this.scale.height/2, "board")
         this.bg.setScale(this.gameScale)
 
-        this.dice = new Dice(this)
-
         this.mapDatas = new MapDatas()
 
         const startPos = { x: this.mapDatas.locations[0].x*this.gameScale, y: this.mapDatas.locations[0].y*this.gameScale }
@@ -61,9 +57,10 @@ export class Game extends Scene
         this.pointerDown = false
 
         this.input.on("pointermove", (_pointer: PointerEvent, currentlyOver: GameObjects.GameObject[]) => {
-            // console.log(currentlyOver)
             this.UI.pointerCurrentlyOver = currentlyOver.length
         })
+
+        this.diceDouble = false
 
         // this.add.text(320, 180, "Test", {
         //     fontFamily: "monogram", color: "#000000"
@@ -122,11 +119,11 @@ export class Game extends Scene
                             player.money -= place.price/2
                             this.UI.refreshInfoBoard()
                             this.isWalk = false
-                            this.currentIndex = (this.currentIndex + 1) % this.players.length
+                            this.changeTurn()
                         }
                         else{
                             this.isWalk = false
-                            this.currentIndex = (this.currentIndex + 1) % this.players.length
+                            this.changeTurn()
                         }
                     }
                     else{
@@ -135,9 +132,19 @@ export class Game extends Scene
                 }
                 else{
                     this.isWalk = false
-                    this.currentIndex = (this.currentIndex + 1) % this.players.length
+                    this.changeTurn()
+                    this.UI.dice.setVisible(true)
                 }
             }, 1200)
+        }
+    }
+
+    changeTurn(){
+        if(this.diceDouble){
+            this.diceDouble = false
+        }
+        else{
+            this.currentIndex = (this.currentIndex + 1) % this.players.length
         }
     }
 }
